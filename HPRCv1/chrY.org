@@ -1,0 +1,87 @@
+* Comparing ChrY  with vg deconstruct vs povu gfa2vcf
+
+We compared vg and povu on chromosome Y from the PGGB dataset as follows
+
+Commands ran
+
+#+BEGIN_SRC bash
+/usr/bin/time -v vg deconstruct -t 8 -P "grch38" -H "#" -e -a ~/Data/bubbles/HPRC/chrY.hprc-v1.0-pggb.gfa > x2.chrY.vg.vcf
+#+END_SRC
+
+#+BEGIN_SRC bash
+povu gfa2vcf --stdout -t 12 -v 0 -i ~/Data/bubbles/HPRC/chrY.hprc-v1.0-pggb.gfa -P "grch38" > x.chrY.pv.vcf
+#+END_SRC
+
+** Comparing performance
+
+Performance measured using /usr/bin/time -v
+
+| Dataset                               |      vg | povu |
+| Time  elapsed (wall clock) time (m:s) | 5:48.87 | 3:01 |
+| Memory      (GB)                      |     1.2 |  6.0 |
+
+
+In terms of performance, povu used about half as much time but 6 times as much
+memory as vg.
+
+** Comparing VCF files
+
+Due to the disparities in the VCF generated it is rather hard to compare them
+so I resorted to manually comparing them.
+
+For ease of communication, I focus on one case of a false positive variant from
+vg deconstruct and touch on inversions and finish with two visualizations of the
+kinds of variants that povu found.
+
+*** Inexistent variants
+
+
+We found that vg found some variants which did not exist on any haplotype
+
+This vcf records is presented using ~\~ in place of ~|~ which to allow for tabulation
+
+| #CHROM      |     POS | ID           | REF | ALT | QUAL | FILTER | INFO                                                                        | FORMAT | HG00621 | HG00673 | HG01106 | HG01109 | HG01243 | HG01258 | HG01358 | HG01928 | HG01952 | HG02055 | HG02145 | HG02486 | HG02572 | HG02717 | HG03098 | HG03492 | HG03579 |
+| grch38#chrY | 2807445 | >19705>19708 | A   | G   |   60 | .      | AC=1;AF=0.0588235;AN=17;AT=>19705>19707>19708,>19705>19706>19708;NS=17;LV=0 | GT     |       0 |       0 | 0\.     |       0 |       0 |       0 |       0 |       0 |       0 |       0 |       0 | 0\.     | 0\.     |       0 | 1\.     |       0 |       0 |
+
+The alt (~>19706~) is derived from from sample ~HG03098~ and in the forward
+strand however analysis of the P line reveals that the node 19706 only exists
+on the reverse strand on one of the samples which we show in this clipped P
+line below
+
+#+BEGIN_SRC bash
+HG03098#1#JAHEPM010000109.1	19710-,19708-,19706-,19705-,19703-,19702-,19699
+#+END_SRC
+
+*** Inversions
+
+the VCF from povu contained ~3,372~ inversion records
+vg does not explicitly label the kind of variant and also includes the variant
+records context so it would need some further analysis to determine the kinds of
+variants found.
+
+** Variants found by povu
+
+The distribution of variants as found in povu is as below in 100 bins following
+loci along GRCH38
+
+Variant distribution represents the number of variants not the length.
+In terms of the length, the length of the variants is much longer in the inversions than other variant types
+
+[[file:variant_distribution.pdf]]
+
+
+The tangled regions are VNTRs and their distribution across bins is presented below
+
+[[file:VNTR.pdf]]
+
+
+** Conclusion
+Subsitititions are the more common variants.
+Despite being a lot more we believe the outsisied representation could be due to
+the VNTRs and the untangling process
+
+| Variant type | DEL   | INS   | INV   | SUB    |
+| Count        | 3,576 | 4,208 | 3,372 | 17,531 |
+
+The distribution of VNTRs and inversions presents as highly clustered within and
+between bins
