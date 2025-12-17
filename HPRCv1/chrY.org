@@ -12,17 +12,16 @@ Commands ran
 povu gfa2vcf --stdout -t 12 -v 0 -i ~/Data/bubbles/HPRC/chrY.hprc-v1.0-pggb.gfa -P "grch38" > x.chrY.pv.vcf
 #+END_SRC
 
+The VCF files are bundled together as [[./chrY.comp.tar.gz]]
+
 ** Comparing performance
 
-Performance measured using /usr/bin/time -v
+Performance measured using ~/usr/bin/time -v~.
+Povu took half as much time but 6 times as much memory as vg.
 
 | Dataset                               |      vg | povu |
 | Time  elapsed (wall clock) time (m:s) | 5:48.87 | 3:01 |
 | Memory      (GB)                      |     1.2 |  6.0 |
-
-
-In terms of performance, povu used about half as much time but 6 times as much
-memory as vg.
 
 ** Comparing VCF files
 
@@ -58,6 +57,61 @@ the VCF from povu contained ~3,372~ inversion records
 vg does not explicitly label the kind of variant and also includes the variant
 records context so it would need some further analysis to determine the kinds of
 variants found.
+
+**** Confirming the validity of inversions
+
+To confirm the validity of our inversions we inspect a single inversion, inversion
+~|20095|20118|~ which according to the VCF file occurs in the 5th contig of
+sample ~HG03098~
+
+| CHROM       |     POS | ID            | REF            | ALT             | QUAL | FILTER | INFO                                                                                                                                                                                                                                                         | FORMAT | grch38#chrY | HG00621 | HG00673                             | HG01106                         | HG01109                                   | HG01243                 | HG01258             | HG01358                       | HG01928                       | HG01952                   | HG02055                             | HG02145                                                                         | HG02486                                     | HG02572                       | HG02717                                         | HG03098                                                     | HG03492                           | HG03579                         |
+| grch38#chrY | 2996406 | \20095\20118\ | CATATA...TGGGC | GCCCAC...TATATG |   60 | PASS   | AC=3;AF=0.8;AN=4;NS=4;AT=>20095>20096>20097>20098>20100>20102>20103>20105>20106>20108>20109>20110>20112>20113>20115>20116>20118,<20118<20116<20115<20113<20112<20110<20109<20108<20106<20105<20103<20102<20100<20098<20097<20096<20095;VARTYPE=INV;TANGLED=F | GT     |           0 | .\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\1\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\1\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\1\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. | .\.\.\.\.\.\.\.\.\.\.\.\.\.\.\. |
+
+The contigs in the GFA are as follows with most contigs elided:
+
+#+BEGIN_SRC
+grch38#chrY
+...
+HG03098#2#JAHEPL010000200.1
+HG03098#2#JAHEPL010000247.1
+HG03098#1#JAHEPM010000079.1
+HG03098#1#JAHEPM010000091.1
+HG03098#1#JAHEPM010000109.1
+HG03098#1#JAHEPM010000126.1
+HG03098#1#JAHEPM010000139.1
+HG03098#1#JAHEPM010000158.1
+HG03098#1#JAHEPM010000170.1
+HG03098#1#JAHEPM010000192.1
+HG03098#1#JAHEPM010000203.1
+HG03098#1#JAHEPM010000209.1
+HG03098#1#JAHEPM010000226.1
+HG03098#1#JAHEPM010000231.1
+HG03098#1#JAHEPM010000235.1
+HG03098#1#JAHEPM010000251.1
+HG03098#1#JAHEPM010000255.1
+HG03098#1#JAHEPM010000280.1
+HG03098#1#JAHEPM010000285.1
+HG03098#1#JAHEPM010000290.1
+HG03098#1#JAHEPM010000307.1
+HG03098#1#JAHEPM010000313.1
+HG03098#1#JAHEPM010000320.1
+HG03098#1#JAHEPM010000332.1
+HG03098#1#JAHEPM010000333.1
+HG03098#1#JAHEPM010000361.1
+HG03098#1#JAHEPM010000362.1
+HG03098#1#JAHEPM010000368.1
+HG03098#1#JAHEPM010000398.1
+HG03098#1#JAHEPM010000428.1
+...
+#+END_SRC
+
+Inspection of the P lines confirms that the inversion does indeed exist in the
+5th contig of the ~HG03098~ sample.
+
+
+| grch38#chrY                 | 20095+,20096+,20097+,20098+,20100+,20102+,20103+,20105+,20106+,20108+,20109+,20110+,20112+,20113+,20115+,20116+,20118+ |
+| HG03098#1#JAHEPM010000109.1 | 20118-,20116-,20115-,20113-,20112-,20110-,20109-,20108-,20106-,20105-,20103-,20102-,20100-,20098-,20097-,20096-,20095- |
+
 
 ** Variants found by povu
 
