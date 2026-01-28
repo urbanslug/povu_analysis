@@ -1,0 +1,23 @@
+* Data fetching and conversion
+
+Download the ~.og~ graph from ghrc 38
+
+convert from ~.og~ format to .gfa using:
+
+~odgi view -g -i <filename>.og > <filename>.gfa~
+
+* Done
+Minigraph Cactus Dataset GRCH38 Chr checklists
+ - [ ] 1
+ - [X] 6
+ - [X] 17
+ - [X] 20
+ - [X] 21
+ - [ ] 22
+ - [ ] X
+ - [X] Y
+
+Stack
+ - [ ] 1
+ - [ ] X
+ - [ ] 22
