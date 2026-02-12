@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Povu VCF Folder Listing</title>
+    <style>
+       body {
+         font-family: Arial, sans-serif;
+         margin: 20px auto;    /* 'auto' centers the body horizontally */
+         max-width: 1000px;    /* Prevents the page from becoming too wide */
+         line-height: 1.6;     /* Adds a bit of breathing room to text */
+         padding: 0 20px;      /* Adds a safety gap for mobile screens */
+       }
+
+       table {
+         width: 100%;          /* Table fills the 1000px container */
+         border-collapse: collapse;
+         margin-bottom: 30px;
+       }
+
+        h1 { color: #333; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; color: #555; }
+        tr:hover { background-color: #f1f1f1; }
+        a { text-decoration: none; color: #1a73e8; font-weight: bold; }
+        .status-tag { font-size: 0.8em; padding: 4px 8px; border-radius: 4px; background: #eee; }
+    </style>
+</head>
+<body>
+
+    <h1>MiniGraph Cactus HPRC v2 Variant Calls</h1>
+    <h3>Ref Haplotype: GRCh38</h3>
+
+    <h2>Generated Files</h2>
+    <table id="generated-table">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Size</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>In Progress</h2>
+    <table id="inprogress-table">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Estimated Size</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+     // 1. Data structured as objects
+     const generatedData = [
+       { name: 'chr6.vcf', size: '5.1 GB' },
+       { name: 'chr17.vcf', size: '2.9 GB' },
+       { name: 'chr20.vcf', size: '1.7 GB' },
+       { name: 'chr21.vcf', size: '3.7 GB' },
+       { name: 'chr22.vcf', size: '3.2 GB' },
+       { name: 'chrX.vcf', size: '4.7 GB' },
+       { name: 'chrY.vcf', size: '263 MB' },
+     ];
+
+     const inProgressData = [
+       { name: 'chr1.vcf', size: '-' },
+       { name: 'chr2.vcf', size: '-' },
+       { name: 'chr3.vcf', size: '-' },
+       { name: 'chr4.vcf', size: '-' },
+       { name: 'chr5.vcf', size: '-' },
+       { name: 'chr7.vcf', size: '-' },
+       { name: 'chr8.vcf', size: '-' },
+       { name: 'chr9.vcf', size: '-' },
+       { name: 'chr10.vcf', size: '-' },
+       { name: 'chr11.vcf', size: '-' },
+       { name: 'chr12.vcf', size: '-' },
+       { name: 'chr13.vcf', size: '-' },
+       { name: 'chr14.vcf', size: '-' },
+       { name: 'chr15.vcf', size: '-' },
+       { name: 'chr16.vcf', size: '-' },
+       { name: 'chr18.vcf', size: '-' },
+       { name: 'chr19.vcf', size: '-' },
+     ];
+
+     //const baseUrl = "";
+
+     // 2. The loop function
+     function buildTable(data, tableId, isLink) {
+       const tbody = document.querySelector(`#${tableId} tbody`);
+
+       data.forEach(file => {
+         // Create a new row
+         const row = document.createElement('tr');
+
+         // Create Name Cell
+         const nameCell = document.createElement('td');
+         if (isLink) {
+           const link = document.createElement('a');
+           link.href = `${file.name}`;
+           link.textContent = file.name;
+           nameCell.appendChild(link);
+         } else {
+           nameCell.textContent = file.name;
+         }
+
+         // Create Size Cell
+         const sizeCell = document.createElement('td');
+         sizeCell.textContent = file.size;
+
+         // Append cells to row, then row to table
+         row.appendChild(nameCell);
+         row.appendChild(sizeCell);
+         tbody.appendChild(row);
+       });
+     }
+
+     // 3. Execute
+     buildTable(generatedData, 'generated-table', true);
+     buildTable(inProgressData, 'inprogress-table', false);
+    </script>
+</body>
+</html>

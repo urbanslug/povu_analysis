@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# ------------------------------------------
+# Downloader and converter for HPRC v2 data
+# ------------------------------------------
+
+# Ensure DATA_DIR is set
+if [[ -z "$DATA_DIR" ]]; then
+    echo "ERROR: DATA_DIR environment variable is not set." >&2
+    exit 1
+fi
+
+# Define default chromosomes if none are provided
+default_chromosomes=("X" "Y")
+
+# Parse chromosomes from input
+chromosomes=()
+while getopts "c:" opt; do
+    case $opt in
+        c)
+            IFS=',' read -r -a chromosomes <<< "$OPTARG"
+            ;;
+        \?)
+            echo "Usage: $0 -c <chromosome list (comma-separated)>"
+            exit 1
+            ;;
+    esac
+done
+
+# Set default chromosomes if none are provided
+if [[ ${#chromosomes[@]} -eq 0 ]]; then
+    echo "No chromosomes provided. Using default list: ${default_chromosomes[*]}"
+    chromosomes=("${default_chromosomes[@]}")
+else
+    echo "Chromosome list provided: ${chromosomes[*]}"
+fi
+
+# Initialize log file
+log_file="$DATA_DIR/download_and_convert.log"
+echo "Log file: $log_file"
+
+# Loop through each chromosome
+for chr in "${chromosomes[@]}"; do
+    echo "Processing chromosome: $chr"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Processing chromosome: $chr" >> "$log_file"
+
+    # Define file paths
+    url="https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/scratch/2025_02_28_minigraph_cactus/hprc-v2.0-mc-grch38/hprc-v2.0-mc-grch38.chroms/chr${chr}.full.og"
+    out_og="$DATA_DIR/chr${chr}.full.og"
+    out_gfa="$DATA_DIR/chr${chr}.full.gfa"
+
+    # Skip processing if output files already exist
+    if [[ -f "$out_og" && -f "$out_gfa" ]]; then
+        echo "Skipping chr${chr} - Output files already exist."
+        echo "Skipping chr${chr} - Output files already exist." >> "$log_file"
+        continue
+    fi
+
+    # Step 1: Download the `.og` file
+    echo "Downloading chr${chr}..."
+    curl_http_status=$(curl -w "%{http_code}" -o "$out_og" -LO "$url")
+
+    if [[ "$curl_http_status" -ne 200 ]]; then
+        echo "ERROR: Failed to download chr${chr} (HTTP $curl_http_status)." | tee -a "$log_file"
+        rm -f "$out_og"
+        continue
+    fi
+    echo "Downloaded: $out_og"
+
+    # Step 2: Convert to GFA
+    echo "Converting chr${chr} to GFA..."
+    odgi view -g -i "$out_og" > "$out_gfa"
+
+    if [[ $? -ne 0 ]]; then
+        echo "ERROR: Failed GFA conversion for chr${chr}." | tee -a "$log_file"
+        rm -f "$out_gfa"
+        continue
+    fi
+    echo "Conversion successful: $out_gfa"
+
+    # Step 3: Delete the `.og` file
+    echo "Cleaning up intermediate file: $out_og"
+    rm -f "$out_og"
+
+    if [[ $? -eq 0 ]]; then
+        echo "Deleted intermediate file: $out_og"
+    else
+        echo "WARNING: Failed to delete $out_og." | tee -a "$log_file"
+    fi
+
+    # Log success
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Successfully processed chr${chr}" >> "$log_file"
+done
+
+echo "All processing complete. Check the log file: $log_file"
