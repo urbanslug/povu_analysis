@@ -1,0 +1,45 @@
+* Data fetching and conversion
+
+Download the ~.og~ graph from ghrc 38
+
+convert from ~.og~ format to .gfa using:
+
+~odgi view -g -i <filename>.og > <filename>.gfa~
+
+* Done
+Minigraph Cactus Dataset GRCH38 Chr checklists
+ - [X] 6
+ - [X] 17
+ - [X] 20
+ - [X] 21
+ - [X] 22
+ - [X] X
+ - [X] Y
+
+Stack
+ - [ ] 1
+
+#+BEGIN_SRC
+output
+ povu gfa2vcf -h -i $DATA_DIR/chrX.full.gfa -P "GRCh38" -t 20 > $DATA_DIR/chrX.vcf
+Boundary: 5990649 5990425
+Boundary: 6407298 6407266
+INFO [povu::genomics::graph::gen_sort] Generating sort for RoV: >3761230>3869104
+Segmentation fault (core dumped)
+nmwaniki@sencha:~/src/povu$ povu gfa2vcf -h -i $DATA_DIR/chr22.full.gfa -P "GRCh38" -t 20 > $DATA_DIR/chr22.vcf
+INFO [povu::genomics::graph::gen_sort] Generating sort for RoV: >2753877>2797054
+ERR [povu::overlay::hap_sl_from_lap] Could not find ia::context nodes in haplotype 440 >2784507>2784510
+nmwaniki@sencha:~/src/povu$ povu gfa2vcf -h -i $DATA_DIR/chr21.full.gfa -P "GRCh38" -t 20 > $DATA_DIR/chr21.vcf
+nmwaniki@sencha:~/src/povu$ povu gfa2vcf -h -i $DATA_DIR/chr20.full.gfa -P "GRCh38" -t 20 > $DATA_DIR/chr20.vcf
+nmwaniki@sencha:~/src/povu$ povu gfa2vcf -h -i $DATA_DIR/chr17.full.gfa -P "GRCh38" -t 20 > $DATA_DIR/chr17.vcf
+Boundary: 5903521 5903521
+Boundary: 5887068 5887053
+Boundary: 5886556 4294967295
+nmwaniki@sencha:~/src/povu$ povu gfa2vcf -h -i $DATA_DIR/chr1.full.gfa -P "GRCh38" -t 20 > $DATA_DIR/chr1.vcf
+Boundary: 19698400 4294967295
+Killed
+#+END_SRC
+
+5990425
+5990500
+5990650

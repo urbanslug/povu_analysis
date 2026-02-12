@@ -5,7 +5,7 @@ We compared vg and povu on chromosome Y from the PGGB dataset as follows
 Commands ran
 
 #+BEGIN_SRC bash
-/usr/bin/time -v vg deconstruct -t 8 -P "grch38" -H "#" -e -a ~/Data/bubbles/HPRC/chrY.hprc-v1.0-pggb.gfa > x2.chrY.vg.vcf
+vg deconstruct -t 8 -P "grch38" -H "#" -e -a ~/Data/bubbles/HPRC/chrY.hprc-v1.0-pggb.gfa > x2.chrY.vg.vcf
 #+END_SRC
 
 #+BEGIN_SRC bash
@@ -70,7 +70,7 @@ sample ~HG03098~
 The contigs in the GFA are as follows with most contigs elided:
 
 #+BEGIN_SRC
-grch38#chrY
+agrch38#chrY
 ...
 HG03098#2#JAHEPL010000200.1
 HG03098#2#JAHEPL010000247.1
